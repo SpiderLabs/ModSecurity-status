@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- FIXME: to be placed in the headers -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-eval' https://*.googleapis.com https://*.gstatic.com; style-src 'unsafe-inline' 'self' https://*.googleapis.com https://*.gstatic.com; font-src https://*.googleusercontent.com; img-src 'self' https://*.googleapis.com https://*.gstatic.com ; connect-src 'self'; frame-src 'none'">
+    <meta charset="utf-8">
+    <title>ModSecurity status map</title>
+    <LINK href="modsec-status.css" rel="stylesheet" type="text/css">
+    <LINK href="jquery-ui.css" rel="stylesheet" type="text/css">
+    <script src="jquery-1.10.2.js"></script>
+    <script src="jquery-ui.js"></script>
+    <script src="jquery.balloon.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=visualization&key=AIzaSyAKVJmI_emRYLqcJshiBGxp7BdtSC2RZhE"></script>
+    <script src="modsec-status.js"></script>
+  </head>
+  <body>
+    <div id="headerBoxes">
+      <div id="headerBg">
+        <div id="header">
+          <img id="modSecLogo" src="ModSecurityLogo.png">
+        </div>
+      </div>
+      <div id="extraInfo" class="info">
+        <div id="amountOfData">&nbsp;</div>
+        <div id="consoleLoading">&nbsp;</div>
+      </div>
+      <div id="options">
+        <div id="range">
+          <div id="slider-range"></div>
+          <div id="first-register">20 Jan 2013</div>
+          <div id="last-register">Now</div>
+        </div>
+        <BR>
+        <input id=ignore checked type="checkbox" name="lhebs" value="lehbs">
+        Ignore records without city information
+        </input>
+      </div>
+    </div>
+    <div id="legend">
+      <p id="max"></p>
+      <div id="colorBar"></div>
+      <p id=min>0</p>
+    </div>
+    <div id="map-canvas"></div>
+  </body>
+</html>
