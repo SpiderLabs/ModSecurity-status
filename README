@@ -1,0 +1,31 @@
+
+ModSecurity status
+
+
+ModSecurity status is a mechanism to collect and display usage statistics of
+ModSecurity. It is divided into four main components:
+
+- WebSite:     A rich html page that is responsable to show the utilization
+               status in a user friendly way.
+
+- API:         An api which is utilized by the WebSite component to retrieve
+               data from our database.
+
+- Collector:   Set of scripts responsable to parser tinydns log files and
+               populate a database that can be comsumed by the API.
+
+- ModSecurity: Responsible to provide information about every instance of
+	       itself, using DNS queries.
+
+ModSecurity is not part of this repository, it is available under its own
+repository at: https://github.com/SpiderLabs/ModSecurity. The other three
+compoents lies on the same repository as that file.
+
+The WebSite and API componets are deployed under the official ModSecurity
+status page, public available at:
+
+http://status.modsecurity.org
+
+For more information about the stats mechanism, check ModSecurity wiki.
+FIXME: feed the wiki and place the url.
+
