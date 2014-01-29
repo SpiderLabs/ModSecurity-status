@@ -41,7 +41,7 @@ sub printQueryLine {
   $ret =~ s/\.//g;
   $ret = MIME::Base32::decode(uc $ret);
 
-  return if (!($ret =~ m/^[A-z0-9-_,.)(\/ ]+$/));
+  return if (!($ret =~ m/^[A-Za-z0-9-_,.)(\/ ]+$/));
   my $l = time . ",$host,$ret";
   my ($modsec, $apache, $apr, $pcre, $lua, $libxml, $install_id) = split(/,/, $ret);
 
