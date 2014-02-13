@@ -12,9 +12,10 @@ use DBI;
 require "modsec-tinydns-parser-config.pl";
 
 our $tail, $geo_lite_db, $mysql_dbi, $mysql_username, $mysql_password, $log_uri;
+our @connection = ($mysql_dbi, $mysql_username, $mysql_password);
 
 my $gi = Geo::IP->open($geo_lite_db, GEOIP_STANDARD);
-my $dbh = DBI->connect($mysql_dbi, $mysql_username, $mysql_password) or die "Connection Error: $DBI::errstr\n";
+my $dbh = DBI->connect_cached(@connection) or die "Connection Error: $DBI::errstr\n";
 
 if ($log_uri) {
 	open(LOG, ">>$log_uri" ) || die "Problems opening log file";
@@ -23,6 +24,7 @@ if ($log_uri) {
 
 s/\b([a-f0-9]{8})\b/join(".", unpack("C*", pack("H8", $1)))/eg;
 s/^(@[a-f0-9]+) \b([\d.]+):(\w+):(\w+) ([\+\-\I\/]) \b([a-f0-9]+) \b([-.=\w]+)\n/printQueryLine($1, $2,$3,$4,$5,$6,$7)/e;
+s/\b([\d.]+):(\w+):(\w+) ([\+\-\I\/]) \b([a-f0-9]+) \b([-.=\w]+)\n/printQueryLine('date', $1,$2,$3,$4,$5,$6)/e;
 
 sub escape {
   my ($str) = @_;
@@ -63,9 +65,9 @@ sub printQueryLine {
   $install_id = escape($install_id);
 
   my $record, $latitude, $logitude, $country, $city;
+  $record = $gi->record_by_addr($host);
   if ($record)
   {
-    $record = $gi->record_by_addr($host);
     $latitude = $record->latitude;
     $longitude = $record->longitude;
     $country = $record->country_name;
@@ -83,8 +85,9 @@ sub printQueryLine {
             "'$libxml_loaded', '$ret', '$latitude', '$longitude', " .
 	    "'$country', '$city', '$install_id')";
 
+  $dbh = DBI->connect_cached(@connection) or die "Connection Error: $DBI::errstr\n";
   $sth = $dbh->prepare($sql);
-  $sth->execute or die "SQL Error: $DBI::errstr\n";
+  $sth->execute or die "Failed to insert: $DBI::errstr\n";
 
   if ($log_uri) {
     print LOG "Adding: $sql\n";
