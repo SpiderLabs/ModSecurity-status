@@ -24,9 +24,9 @@ if ($log_uri) {
 s/\b([a-f0-9]{8})\b/join(".", unpack("C*", pack("H8", $1)))/eg;
 s/^(@[a-f0-9]+) \b([\d.]+):(\w+):(\w+) ([\+\-\I\/]) \b([a-f0-9]+) \b([-.=\w]+)\n/printQueryLine($1, $2,$3,$4,$5,$6,$7)/e;
 
-sub scape {
+sub escape {
   my ($str) = @_;
-  $str =~ s/[^0-9.-]+//g;
+  $str =~ s/[^0-9a-fA-F.-]+//g;
   return $str;
 }
 
@@ -50,17 +50,17 @@ sub printQueryLine {
   ($lua, $lua_loaded) = split(/\//, $lua);
   ($libxml, $libxml_loaded) = split(/\//, $libxml);
 
-  $modsec = scape($modsec);
-  $apache = scape($apache);
-  $apr = scape($apr);
-  $apr_loaded = scape($apr_loaded);
-  $pcre = scape($pcre);
-  $pcre_loaded = scape($pcre_loaded);
-  $lua = scape($lua);
-  $lua_loaded = scape($lua_loaded);
-  $libxml = scape($libxml);
-  $libxml_loaded = scape($libxml_loaded);
-  $install_id = scape($install_id);
+  $modsec = escape($modsec);
+  $apache = escape($apache);
+  $apr = escape($apr);
+  $apr_loaded = escape($apr_loaded);
+  $pcre = escape($pcre);
+  $pcre_loaded = escape($pcre_loaded);
+  $lua = escape($lua);
+  $lua_loaded = escape($lua_loaded);
+  $libxml = escape($libxml);
+  $libxml_loaded = escape($libxml_loaded);
+  $install_id = escape($install_id);
 
   my $record, $latitude, $logitude, $country, $city;
   if ($record)
