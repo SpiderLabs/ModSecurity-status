@@ -41,11 +41,14 @@ var lastFetchedEpoch = 0;
 var map, pointarray, heatmap;
 var heatmapData = [];
 var redrawMapTimeout = 0;
+var updateTimeOut = 0;
 var preciseOnly = true;
+var uniqueIds = true;
 var firstItem = getEpoch();
 var firstQueryEver = 1385690874 - 10 * 24 * 60 * 60;
 var uiValues = [0, 0];
 var balloonDate = 0;
+
 
 // Detect which browser prefix to use for the specified CSS value
 // (e.g., background-image: -moz-linear-gradient(...);
@@ -78,7 +81,7 @@ function processJson(json)
       processItem(item);
     }, 0)
   });
-  setTimeout(function ()
+  updateTimeOut = setTimeout(function ()
   {
     fetchJsonData(lastFetchedEpoch, getEpoch());
   }, 10000);
@@ -122,9 +125,20 @@ function fetchJsonData(from, to)
 {
   lastFetchedEpoch = to;
   showLoading();
+  var unique = "";
+
   //console.log("fetch: " + from + " to: " + to);
   //console.log(api_uri + "/" + from + "/" + to + "");
-  var apiData = $.getJSON(api_uri + "/" + from + "/" + to + "", function ()
+  if (uniqueIds == true)
+  {
+    unique = "/unique/";
+  }
+  else
+  {
+    unique = "/";
+  }
+
+  var apiData = $.getJSON(api_uri + unique + "/" + from + "/" + to + "", function ()
   {
     console.log("success");
   })
@@ -371,6 +385,9 @@ function initialize()
   $('#ignore').click(function () {
       setPreciseOnly();
   });
+  $('#uniq').click(function () {
+      setUniqueIds();
+  });
 
 }
 
@@ -385,6 +402,15 @@ function setPreciseOnly()
   showLoading();
   preciseOnly = preciseOnly ? false : true;
   redrawMap();
+}
+
+function setUniqueIds()
+{
+  clearTimeout(updateTimeOut);
+  showLoading();
+  heatmapData = [];
+  uniqueIds = uniqueIds ? false : true;
+  fetchJsonData(firstQueryEver, getEpoch());
 }
 
 function toggleHeatmap()

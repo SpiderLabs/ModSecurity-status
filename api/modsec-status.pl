@@ -9,12 +9,27 @@ our $mysql_dbi, $mysql_username, $mysql_password;
 $dbh = DBI->connect($mysql_dbi, $mysql_username, $mysql_password) or die "Connection Error: $DBI::errstr\n";
 
 my $uri = $ENV{'REQUEST_URI'};
+my ($unique) = $uri =~m/(unique)/;
 my ($from, $to) = $uri =~ m/.*\/([\d+]+)\/([\d+]+)$/;
 
-$sql = "select ts,modsec,apache,apr,apr_loaded,pcre,pcre_loaded," .
-       "lua,lua_loaded,libxml,libxml_loaded,host,latitude,longitude, ".
-       "country,city,id,UNIX_TIMESTAMP(ts) from status where " .
-       "ts >= FROM_UNIXTIME($from) and ts < FROM_UNIXTIME($to) order by ts ASC LIMIT 0, 20000 ";
+my $sql;
+
+if ($unique)
+{
+	$sql = "select ts,modsec,apache,apr,apr_loaded,pcre,pcre_loaded," .
+		"lua,lua_loaded,libxml,libxml_loaded,host,latitude,longitude, ".
+		"country,city,id,UNIX_TIMESTAMP(ts) from status where " .
+		"ts >= FROM_UNIXTIME($from) and ts < FROM_UNIXTIME($to) " .
+		"group by id order by ts ASC LIMIT 0, 20000";
+}
+else
+{
+	$sql = "select ts,modsec,apache,apr,apr_loaded,pcre,pcre_loaded," .
+		"lua,lua_loaded,libxml,libxml_loaded,host,latitude,longitude, ".
+		"country,city,id,UNIX_TIMESTAMP(ts) from status where " .
+		"ts >= FROM_UNIXTIME($from) and ts < FROM_UNIXTIME($to) " .
+		"order by ts ASC LIMIT 0, 20000;";
+}
 
 $sth = $dbh->prepare($sql);
 $sth->execute or die "SQL Error: $DBI::errstr\n";
