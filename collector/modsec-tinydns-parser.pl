@@ -82,7 +82,7 @@ sub printQueryLine {
             "latitude, longitude, country, city, id) values ".
             "('$host', '$modsec', '$apache', '$apr', '$apr_loaded', " .
             "'$pcre', '$pcre_loaded', '$lua', '$lua_loaded', '$libxml', " .
-            "'$libxml_loaded', '$ret', '$latitude', '$longitude', " .
+            "'$libxml_loaded', '', '$latitude', '$longitude', " .
 	    "'$country', '$city', '$install_id')";
 
   $dbh = DBI->connect_cached(@connection) or die "Connection Error: $DBI::errstr\n";
